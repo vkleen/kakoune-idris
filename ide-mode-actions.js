@@ -36,7 +36,7 @@ function idrisExec(file, ipkg, root, additionalCommand, next) {
     // idris2 --ide-mode always returns status 1 (error) because the last line sent was empty
     try {
         execSync(cdProjectCmd + '; [[ -d ' + fullSourcedir + ' ]] && cd ' + fullSourcedir + '; idris2 ' + compilerOptions + ' --ide-mode',
-        	{ input: `((:load-file "${file}") 1)\n` + additionalCommand + '\n', encoding: 'utf8', shell: '/bin/bash' });
+        	{ input: `((:load-file "${file}") 1)\n` + additionalCommand + '\n', encoding: 'utf8', shell: 'bash' });
 
         // When `https://github.com/edwinb/Idris2/issues/349` gets merged, we will not need to parse the ipkg file
         // and the following would be enough to use thie ipkg configuration
@@ -46,7 +46,7 @@ function idrisExec(file, ipkg, root, additionalCommand, next) {
 
         let exprs = parseProtocolExpr(res.stdout);
         let ret = exprs.find(e => e[0] == ':return')[1];
-        
+
         if (ret[0] == ':error') {
             // Prefer to use the warning message over the error message
             let warn = exprs.find(e => e[0] == ':warning');
@@ -59,7 +59,7 @@ function idrisExec(file, ipkg, root, additionalCommand, next) {
 }
 
 function lastRetVal(exprs) {
-   return exprs.concat().reverse().find(e => e[0] == ':return').find(e => e[0] == ':ok')[1]; 
+   return exprs.concat().reverse().find(e => e[0] == ':return').find(e => e[0] == ':ok')[1];
 }
 
 exports.load = function(file, ipkg, root) {
@@ -83,7 +83,7 @@ exports.caseSplit = function(file, ipkg, root, selection, line, column) {
         let generatedCode = lastRetVal(exprs);
         return `execute-keys -draft x c "${newLinesToRet(generatedCode)}<ret><esc>"; execute-keys ${line}g ${column - 1}l`;
     });
-    
+
 }
 
 exports.addClause = function(file, ipkg, root, selection, line) {
